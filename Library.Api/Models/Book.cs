@@ -2,7 +2,7 @@
 
 public class Book
 {
-    public string Isnb { get; set; } = default!;
+    public string Isbn { get; set; } = default!;
     public string Title { get; set; } = default!;
     public string Author { get; set; } = default!;
     public string Description { get; set; } = default!;

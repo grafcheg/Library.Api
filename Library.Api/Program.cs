@@ -39,7 +39,7 @@ app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book
         });
     }
 
-    return Results.Created($"/books/{book.Isnb}", book);
+    return Results.Created($"/books/{book.Isbn}", book);
 });
 
 // DB init

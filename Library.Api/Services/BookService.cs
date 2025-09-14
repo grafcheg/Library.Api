@@ -24,10 +24,8 @@ public class BookService : IBookService
         
         using var connection = await _connectionFactory.CreateConnectionAsync();
         var result = await connection.ExecuteAsync(
-            """
-            INSERT INTO Books (Isbn, Title, Author, Description, PageCount, PublishDate)
-            VALUES (@Isbn, @Title, @Author, @Description, @PageCount, @PublishDate)
-            """, book);
+            @"INSERT INTO Books (Isbn, Title, Author, Description, PageCount, PublishDate)
+            VALUES (@Isbn, @Title, @Author, @Description, @PageCount, @PublishDate)", book);
         
         return result > 0;
     }

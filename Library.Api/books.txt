@@ -1,0 +1,42 @@
+﻿[
+  {
+    "isbn": "978-0-7432-7356-5",
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "description": "A classic American novel set in the Jazz Age, exploring themes of wealth, love, and the elusive American Dream through the tragic story of Jay Gatsby.",
+    "pageCount": 180,
+    "publishDate": "1925-04-10"
+  },
+  {
+    "isbn": "978-0-06-112008-4",
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "description": "A powerful tale of racial injustice and moral growth in the American South, told through the eyes of young Scout Finch as her father defends a wrongly accused Black man.",
+    "pageCount": 281,
+    "publishDate": "1960-07-11"
+  },
+  {
+    "isbn": "978-0-14-143951-8",
+    "title": "1984",
+    "author": "George Orwell",
+    "description": "A dystopian masterpiece depicting a totalitarian regime that surveils every aspect of life, manipulates truth, and crushes individuality — a chilling warning about authoritarianism.",
+    "pageCount": 328,
+    "publishDate": "1949-06-08"
+  },
+  {
+    "isbn": "978-0-06-231609-7",
+    "title": "Where the Crawdads Sing",
+    "author": "Delia Owens",
+    "description": "A lyrical blend of mystery and coming-of-age story about a lonely girl raised in the marshes of North Carolina, suspected of murder — intertwined with vivid natural history.",
+    "pageCount": 384,
+    "publishDate": "2018-08-14"
+  },
+  {
+    "isbn": "978-0-544-00341-5",
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "description": "A sweeping intellectual journey through the evolution of Homo sapiens, from ancient hunter-gatherers to modern societies, examining biology, culture, and economics.",
+    "pageCount": 443,
+    "publishDate": "2011-02-01"
+  }
+]

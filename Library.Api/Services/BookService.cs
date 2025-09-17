@@ -13,6 +13,7 @@ public class BookService : IBookService
         _connectionFactory = connectionFactory;    
     }
     
+    // TODO: добавить проверку добавления уже существующей книги
     public async Task<bool> CreateAsync(Book book)
     {
         // var existingBook = await GetByIsbnAsync(book.Isnb);
@@ -37,7 +38,9 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<Book>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        
+        return await connection.QueryAsync<Book>("SELECT * FROM Books");
     }
 
     public async Task<IEnumerable<Book>> GetByTitleAsync(string searchTerm)

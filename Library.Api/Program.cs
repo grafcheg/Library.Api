@@ -21,6 +21,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// добавляем книгу
 app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book> validator) =>
 {
     var validationResult = await validator.ValidateAsync(book);
@@ -40,6 +41,14 @@ app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book
     }
 
     return Results.Created($"/books/{book.Isbn}", book);
+});
+
+// возвращаем все книги
+app.MapGet("books", async (IBookService bookService) =>
+{
+    var books = await bookService.GetAllAsync();
+
+    return Results.Ok(books);
 });
 
 // DB init

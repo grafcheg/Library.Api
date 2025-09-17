@@ -47,7 +47,9 @@ public class BookService : IBookService
 
     public async Task<IEnumerable<Book>> GetByTitleAsync(string searchTerm)
     {
-        throw new NotImplementedException();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        
+        return await connection.QueryAsync<Book>("SELECT * FROM Books WHERE Title LIKE '%' || @Title || '%'", new { Title = searchTerm });
     }
 
     public async Task<bool> UpdateAsync(Book book)

@@ -43,9 +43,15 @@ app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book
     return Results.Created($"/books/{book.Isbn}", book);
 });
 
-// возвращаем все книги
-app.MapGet("books", async (IBookService bookService) =>
+// возвращаем все книги или книг соответсвующих поиску по названию
+app.MapGet("books", async (IBookService bookService, string? searchTerm) =>
 {
+    if (searchTerm is not null && !string.IsNullOrWhiteSpace(searchTerm))
+    {
+        var matchedTitleBooks = await bookService.GetByTitleAsync(searchTerm);
+        return Results.Ok(matchedTitleBooks);
+    }
+    
     var books = await bookService.GetAllAsync();
 
     return Results.Ok(books);

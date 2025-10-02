@@ -65,6 +65,30 @@ app.MapGet("books/{isbn}", async (string isbn, IBookService bookService) =>
     return book is not null ? Results.Ok(book) : Results.NotFound();
 });
 
+// редактируем книгу
+app.MapPut("books/{isbn}", async (string isbn, Book book, IBookService bookService, IValidator<Book> validator) =>
+{
+    book.Isbn = isbn;
+    
+    var validationResult = await validator.ValidateAsync(book);
+    
+    if (!validationResult.IsValid)
+    {
+        return Results.BadRequest(validationResult.Errors);
+    }
+    
+    var updated = await bookService.UpdateAsync(book);
+    
+    return updated ? Results.Ok(book) : Results.NotFound();
+});
+
+// удаляем книгу
+app.MapDelete("books/{isbn}", async (string isbn, IBookService bookService) =>
+{
+    var deleted = await bookService.DeleteAsync(isbn);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
 // DB init
 var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
 await databaseInitializer.InitializeAsync();

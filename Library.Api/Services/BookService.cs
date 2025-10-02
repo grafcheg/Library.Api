@@ -13,15 +13,14 @@ public class BookService : IBookService
         _connectionFactory = connectionFactory;    
     }
     
-    // TODO: добавить проверку добавления уже существующей книги
     public async Task<bool> CreateAsync(Book book)
     {
-        // var existingBook = await GetByIsbnAsync(book.Isnb);
-        //
-        // if (existingBook != null)
-        // {
-        //     return false;
-        // }
+        var existingBook = await GetByIsbnAsync(book.Isbn);
+        
+        if (existingBook != null)
+        {
+            return false;
+        }
         
         using var connection = await _connectionFactory.CreateConnectionAsync();
         var result = await connection.ExecuteAsync(
@@ -54,11 +53,31 @@ public class BookService : IBookService
 
     public async Task<bool> UpdateAsync(Book book)
     {
-        throw new NotImplementedException();
+        var existingBook = await GetByIsbnAsync(book.Isbn);
+
+        if (existingBook is null)
+        {
+            return false;
+        }
+        
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"UPDATE Books SET Title = @Title, Author = @Author, Description = @Description, PageCount = @PageCount, PublishDate = @PublishDate WHERE Isbn = @Isbn",
+            book
+            );
+
+        return result > 0;
     }
 
     public async Task<bool> DeleteAsync(string isbn)
     {
-        throw new NotImplementedException();
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"DELETE FROM Books WHERE Isbn = @Isbn", new { Isbn = isbn }
+            );
+        
+        return result > 0;
     }
 }

@@ -1,10 +1,21 @@
 using FluentValidation;
 using FluentValidation.Results;
+using Library.Api.Auth;
 using Library.Api.Data;
 using Library.Api.Models;
 using Library.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// builder.Configuration.AddJsonFile("appsettings.Local.json", true, true);
+
+builder.Services.AddAuthentication(ApiKeySchemeConstants.SchemeName)
+    .AddScheme<ApiKeyAuthSchemeOptions, ApiKeyAuthHandler>(ApiKeySchemeConstants.SchemeName, _ =>
+    {
+        
+    });
+builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,8 +32,13 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// добавляем книгу
-app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book> validator) =>
+app.UseAuthorization();
+
+// добавляем книгу, нужна авторизация
+app.MapPost("books",
+    [Authorize(AuthenticationSchemes = ApiKeySchemeConstants.SchemeName)]
+    async (Book book, IBookService bookService,
+    IValidator<Book> validator) =>
 {
     var validationResult = await validator.ValidateAsync(book);
     if (!validationResult.IsValid)
@@ -44,7 +60,10 @@ app.MapPost("books", async (Book book, IBookService bookService, IValidator<Book
 });
 
 // возвращаем все книги или книг соответсвующих поиску по названию
-app.MapGet("books", async (IBookService bookService, string? searchTerm) =>
+app.MapGet("books",
+    [AllowAnonymous]
+    async (IBookService bookService,
+    string? searchTerm) =>
 {
     if (searchTerm is not null && !string.IsNullOrWhiteSpace(searchTerm))
     {
@@ -58,15 +77,19 @@ app.MapGet("books", async (IBookService bookService, string? searchTerm) =>
 });
 
 // возвращаем книгу
-app.MapGet("books/{isbn}", async (string isbn, IBookService bookService) =>
+app.MapGet("books/{isbn}",
+    [AllowAnonymous]
+    async (string isbn, IBookService bookService) =>
 {
     var book = await bookService.GetByIsbnAsync(isbn);
     
     return book is not null ? Results.Ok(book) : Results.NotFound();
 });
 
-// редактируем книгу
-app.MapPut("books/{isbn}", async (string isbn, Book book, IBookService bookService, IValidator<Book> validator) =>
+// редактируем книгу, нужна авторизация
+app.MapPut("books/{isbn}",
+    [Authorize(AuthenticationSchemes = ApiKeySchemeConstants.SchemeName)]
+    async (string isbn, Book book, IBookService bookService, IValidator<Book> validator) =>
 {
     book.Isbn = isbn;
     
@@ -82,8 +105,10 @@ app.MapPut("books/{isbn}", async (string isbn, Book book, IBookService bookServi
     return updated ? Results.Ok(book) : Results.NotFound();
 });
 
-// удаляем книгу
-app.MapDelete("books/{isbn}", async (string isbn, IBookService bookService) =>
+// удаляем книгу, нужна авторизация
+app.MapDelete("books/{isbn}",
+    [Authorize(AuthenticationSchemes = ApiKeySchemeConstants.SchemeName)]
+    async (string isbn, IBookService bookService) =>
 {
     var deleted = await bookService.DeleteAsync(isbn);
     return deleted ? Results.NoContent() : Results.NotFound();
